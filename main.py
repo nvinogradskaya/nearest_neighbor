@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import * #QApplication, QGraphicsSimpleTextItem, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QGridLayout, QMessageBox, QGraphicsScene, QGraphicsView
+from PyQt6.QtWidgets import QApplication, QGraphicsSimpleTextItem, QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QGridLayout, QMessageBox, QGraphicsScene, QGraphicsView
 from PyQt6.QtGui import QPainter, QPen, QColor, QBrush, QFont
 from PyQt6.QtCore import Qt
 import math
@@ -111,9 +111,11 @@ class TSP(QWidget):
         self.setLayout(layout)
 
     def generate_matrix(self):
+        # Очистка существующей матрицы
         self.clear_matrix()
+        # Получение числа вершин графа из ввода
         num_points = int(self.size_input.text())
-
+        # Создание виджетов для ввода матрицы смежности
         for row in range(num_points):
             for col in range(num_points):
                 cell_label = QLabel(f"Из пункта {chr(row + 97)} в пункт {chr(col + 97)}:")
@@ -128,10 +130,14 @@ class TSP(QWidget):
                 item.widget().setParent(None)
 
     def start(self):
+        # Получение числа вершин графа из ввода
         num_points = int(self.size_input.text())
+        # Получение матрицы смежности из ввода
         adjacency_matrix = self.get_adj_matrix(num_points)
         try:
+            # Перевод матрицы смежности в граф
             graph = self.parse_adj_matrix(adjacency_matrix, num_points)
+            # Решение задачи коммивояжера методом ближайшего соседа
             path, length = self.nearest_neighbor(graph)
             if path:
                 result_text = "Длина кратчайшего гамильтонова цикла: " + str(length)
@@ -146,8 +152,8 @@ class TSP(QWidget):
         except ValueError:
             result_text = "Ошибка при вводе матрицы смежности"
             path = []
-
         self.result_label.setText(result_text)
+        # Отображение графа на виджете
         self.graph_widget.set_graph(graph, num_points, path)
 
     def get_adj_matrix(self, num_points):
